@@ -5,6 +5,8 @@ date: "November 2, 2018"
 output: github_document
 ---
 
+
+##Problem 1
 ```{r}
 #Load needed libraries
 library(tidyverse)
@@ -17,7 +19,7 @@ file_name = list.files("./data", full.names = TRUE)
 read_file = function(name){
   read_csv(name)
 }
-file_content = map_df(filenames, read_file)
+file_content = map_df(file_name, read_file)
 
 #Combine name with corresponding contents into one file and tidy it
 file = cbind(file_name,file_content) %>%
@@ -31,11 +33,9 @@ file = cbind(file_name,file_content) %>%
 #Make a spaghetti plot with two panels for better observe the difference
 ggplot(file, aes(x = week, y = observation, color = subject)) + geom_line() + facet_grid(~arm)
 ```
+
 As we can see in the plot: 
 
 + The baseline for control group and experiment group are similar;
 + The experiment group has a more rapid increase in observation values, while control group has little change in observation values
-
-
-
 
