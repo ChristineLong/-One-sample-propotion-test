@@ -1,0 +1,29 @@
+---
+title: "p8105_hw5_yl3181"
+author: "Yuelin"
+date: "November 2, 2018"
+output: github_document
+---
+
+```{r}
+#Load needed libraries
+library(tidyverse)
+library(purrr)
+```
+
+```{r}
+#Extract file name and read contents from each file
+file_name = list.files("./data", full.names = TRUE)
+read_file = function(name){
+  read_csv(name)
+}
+file_content = map_df(filenames, read_file)
+
+#Combine name with corresponding contents into one file and tidy it
+file = cbind(file_name,file_content) %>%
+  separate(file_name, into = c("waste1", "arm", "waste2", "subject","waste3"), sep = c(7,10,11,13)) %>% 
+  select(-starts_with("waste")) %>% 
+  gather(key = "week", value = "observation", starts_with("week")) %>% 
+  mutate(week = str_replace(week, "week_", ""))
+```
+
