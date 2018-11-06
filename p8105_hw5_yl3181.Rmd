@@ -24,6 +24,18 @@ file = cbind(file_name,file_content) %>%
   separate(file_name, into = c("waste1", "arm", "waste2", "subject","waste3"), sep = c(7,10,11,13)) %>% 
   select(-starts_with("waste")) %>% 
   gather(key = "week", value = "observation", starts_with("week")) %>% 
-  mutate(week = str_replace(week, "week_", ""))
+  mutate(week = as.numeric(str_replace(week, "week_", "")))
 ```
+
+```{r}
+#Make a spaghetti plot with two panels for better observe the difference
+ggplot(file, aes(x = week, y = observation, color = subject)) + geom_line() + facet_grid(~arm)
+```
+As we can see in the plot: 
+
++ The baseline for control group and experiment group are similar;
++ The experiment group has a more rapid increase in observation values, while control group has little change in observation values
+
+
+
 
