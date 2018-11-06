@@ -39,3 +39,20 @@ As we can see in the plot:
 + The baseline for control group and experiment group are similar;
 + The experiment group has a more rapid increase in observation values, while control group has little change in observation values
 
+
+##Problem 2
+
+```{r}
+#Load and describe raw data
+raw_homi = read_csv("homicide-data.csv")
+
+#Describe data with summary statistics
+knitr::kable(summary(raw_homi))
+```
+
+Raw data description:
+
++ The raw data contains `r nrow(raw_homi)` observations and `r ncol(raw_homi)` variables;
++ Among these variables, there are `r  sum(summary(raw_homi)[2,]==summary(raw_homi)[2,1])` character variables and `r ncol(raw_homi) - sum(summary(raw_homi)[2,]==summary(raw_homi)[2,1])` numerical variables;
++ Key variables includes `r names(raw_homi)[c(2,5:7)]`;
++ Example observations are: `r knitr::kable(raw_homi[1:3,])`
