@@ -61,16 +61,23 @@ Raw data description:
 homi = raw_homi %>% 
   mutate(city_state = str_c(city, state, sep = "_")) %>% 
   group_by(city_state) %>% 
-  summarise(total_homi = n(), unsol_homi = sum(disposition %in% c("Closed without arrest", "Open/No arrest"))) %>% 
-  mutate(prop_homi = unsol_homi / total_homi)
+  summarise(total_homi = n(), unsol_homi = sum(disposition %in% c("Closed without arrest", "Open/No arrest")))
 
 # One sample propotion test for Baltimore, MD
-prop.test(homi[homi$city_state == "Baltimore_MD",]$prop_homi, homi[homi$city_state == "Baltimore_MD",]$total_homi) %>% 
+prop.test(homi[homi$city_state == "Baltimore_MD",]$unsol_homi, homi[homi$city_state == "Baltimore_MD",]$total_homi) %>% 
   broom::tidy() %>% 
-  select(estimate, starts_with("conf."))
+  select(estimate, starts_with("conf.")) %>% 
+  knitr::kable()
+```
+This shows the point estimate and the confidence interval of homicide proportion.
 
-# One sample propotion test for all cities
-test_homi = purrr::map2(homi$prop_homi, homi$total_homi, prop.test)
+```{r}
+# One sample propotion test for all cities in a dataframe
+test_homi = homi %>% 
+  mutate(prop = purrr::map2(.x = unsol_homi, .y = total_homi, .f = ~broom::tidy(prop.test(.x, .y)))) %>%
+  unnest() %>% 
+  select(city_state, estimate, starts_with("conf."))
+
 
 ```
 
