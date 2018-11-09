@@ -7,13 +7,13 @@ output: github_document
 
 
 ##Problem 1
-```{r}
+```{r message=FALSE}
 #Load needed libraries
 library(tidyverse)
 library(purrr)
 ```
 
-```{r}
+```{r message=FALSE}
 #Extract file name and read contents from each file
 file_name = list.files("./data", full.names = TRUE)
 read_file = function(name){
@@ -42,7 +42,7 @@ As we can see in the plot:
 
 ##Problem 2
 
-```{r}
+```{r message=FALSE}
 #Load and describe raw data
 raw_homi = read_csv("homicide-data.csv")
 knitr::kable(summary(raw_homi))
@@ -69,9 +69,10 @@ prop.test(homi[homi$city_state == "Baltimore_MD",]$unsol_homi, homi[homi$city_st
   select(estimate, starts_with("conf.")) %>% 
   knitr::kable()
 ```
-This shows the point estimate and the confidence interval of homicide proportion.
 
-```{r}
+This table shows the point estimate and the confidence interval of homicide proportion for Baltimore, MD.
+
+```{r warning=FALSE}
 # One sample propotion test for all cities in a dataframe
 test_homi = homi %>% 
   mutate(prop = purrr::map2(.x = unsol_homi, .y = total_homi, .f = ~broom::tidy(prop.test(.x, .y)))) %>%
@@ -83,6 +84,13 @@ test_homi %>%
   ggplot(aes(x = fct_reorder(city_state, estimate), y = estimate)) + 
   geom_point() + 
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(
+    title = "Unsolved homicide in US cities",
+    x = "cities and states",
+    y = "Unsolved homicide proportion",
+    caption = "Note: Unsolved homicide proportion is the propotion of unsolved homicide / all homicide cases"
+  ) + 
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 ```
 
